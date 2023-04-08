@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>职责链模式</title>
+</head>
+<body>
+    <input type="text" id="input">
+    <button id="btn">注册</button>
+    <script>
+        const btn = document.querySelector('#btn');
+        // btn.onclick = function(){
+        //     if(input.value.length === 0){
+        //         console.log('error 长度不为空');
+        //     } else {
+        //         if(Number.isNaN(+input.value)){
+        //             console.log('error 这里必须是数字');
+        //         } else {
+        //             if(input.value.length<6){
+        //                 console.log('error 长度必须要大于6')
+        //             }
+        //         }
+        //     }
+        // }
+
+        btn.onclick = function(){
+            checks.check();
+        }
+
+        function checkEmpty(){
+            if(input.value.length === 0){
+                console.log('error 长度不为空');
+                return;
+            }
+            return 'next';
+        }
+        function checkNumber(){
+            if(Number.isNaN(+input.value)){
+                console.log('error 这里必须是数字');
+                return;
+            }
+            return 'next';
+        }
+        function checkLength(){
+            if(input.value.length<6){
+                console.log('error 长度必须要大于6');
+                return;
+            }
+            return '';
+        }
+        class Chain{
+            constructor(fn) {
+                this.checkRule = fn;
+            }
+            check(){
+                this.checkRule()==='next'?this.nextRule.check():null;
+            }
+            addRule(nextRule){
+                this.nextRule = nextRule;
+            }
+        }
+        const checks = new Chain(checkEmpty);
+        const checkNumberChain = new Chain(checkNumber);
+        const checkLengthChain = new Chain(checkLength);
+        checks.addRule(checkNumberChain);
+        checkNumberChain.addRule(checkLengthChain);
+
+    </script>
+</body>
+</html>
